@@ -1,10 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import '../styles/App.css'
+import React, { useState } from 'react';
+import EventList from './EventList';
+import AuthForm from './AuthForm';
+import { AuthProvider } from './AuthContext';
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import '../styles/App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  const events = [
+    { id: 1, name: 'Event 1' },
+    { id: 2, name: 'Event 2' },
+    // Add more events as needed
+  ];
+
+  const handleAuthSubmit = (userData) => {
+    // Implement authentication logic based on isRegister flag
+    console.log(userData);
+  };
 
   return (
     <>
@@ -17,6 +31,12 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
+      <div>
+        <h1>Your Event Manager App</h1>
+        <EventList events={events} />
+        <AuthForm onAuthSubmit={handleAuthSubmit} isRegister={false} />
+        {/* Set isRegister to true for registration form */}
+      </div>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
@@ -29,7 +49,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;

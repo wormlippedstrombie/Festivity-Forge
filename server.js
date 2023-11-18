@@ -1,16 +1,13 @@
-const express = require('express');
+import express from 'express';
 const app = express();
+import mongoose from 'mongoose';
+import { graphqlHTTP } from 'express-graphql'; // Import graphqlHTTP directly
 const PORT = process.env.PORT || 3001;
-const mongoose = require('mongoose');
-require('dotenv').config(); // Load environment variables from .env file
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+import dotenv from 'dotenv'; // Import dotenv directly
+dotenv.config(); // Load environment variables from .env file
 
-const mongoose = require('mongoose');
-const { MONGO_URI } = process.env;
-
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -24,7 +21,11 @@ mongoose.connection.on('error', (err) => {
   console.error(`Error connecting to MongoDB: ${err.message}`);
 });
 
-const { graphqlHTTP } = require('express-graphql');
-const schema = require('./graphql/schema');
-
+// GraphQL setup
+import schema from './graphql/schema'; // Assuming schema is an ESM module
 app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
+
+// Express server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
