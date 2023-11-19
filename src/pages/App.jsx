@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import EventList from './EventList';
-import AuthForm from './AuthForm';
-import { AuthProvider } from './AuthContext';
-import reactLogo from './assets/react.svg';
+import EventList from '../components/EventList';
+import AuthForm from '../components/AuthForm';
+import reactLogo from '../assets/react.svg';
 import viteLogo from '/vite.svg';
 import '../styles/App.css';
 
