@@ -1,4 +1,4 @@
-const Event = require('../models/event.js');
+import Event from '../models/event.js';
 
 const resolvers = {
   Query: {
@@ -61,4 +61,4 @@ const resolvers = {
   },
 };
 
-module.exports = resolvers;
+export default resolvers;

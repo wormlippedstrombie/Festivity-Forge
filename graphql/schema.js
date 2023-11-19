@@ -1,16 +1,21 @@
-const {
+import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLList,
   GraphQLSchema,
   GraphQLID,
   GraphQLNonNull,
-} = require('graphql');
+} from 'graphql';
 
-// Import UserType if you have it
-const UserType = require('./path/to/UserType');
 
-const resolvers = require('./resolvers');
+const UserType = new GraphQLObjectType({
+  name: 'User',
+  fields: () => ({
+    _id: { type: GraphQLID },
+    username: { type: GraphQLString },
+    // Add other fields as needed
+  }),
+});
 
 const EventType = new GraphQLObjectType({
   name: 'Event',
@@ -21,9 +26,11 @@ const EventType = new GraphQLObjectType({
     date: { type: GraphQLString },
     location: { type: GraphQLString },
     organizer: {
-      type: UserType, // Assuming you have a UserType
+      type: UserType,
       resolve(parent, args) {
+        // Assuming you have access to your User model
         // Implement resolver logic to get the organizer details if needed
+        // Example: return UserModel.findById(parent.organizerId);
       },
     },
     // Add other fields as needed
@@ -59,6 +66,7 @@ const Mutation = new GraphQLObjectType({
         description: { type: new GraphQLNonNull(GraphQLString) },
         date: { type: new GraphQLNonNull(GraphQLString) },
         location: { type: new GraphQLNonNull(GraphQLString) },
+        organizerId: { type: GraphQLID }, // Assuming you have an organizerId
         // Add other required fields here
       },
       resolve(parent, args) {
@@ -89,7 +97,7 @@ const Mutation = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: RootQuery,
   mutation: Mutation,
 });

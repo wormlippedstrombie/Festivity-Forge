@@ -3,15 +3,13 @@ const app = express();
 import mongoose from 'mongoose';
 import { graphqlHTTP } from 'express-graphql'; // Import graphqlHTTP directly
 const PORT = process.env.PORT || 3001;
+import schema from './graphql/schema.js';
 
 import dotenv from 'dotenv'; // Import dotenv directly
 dotenv.config(); // Load environment variables from .env file
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect('mongodb://127.0.0.1:27017/myapp');
 
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB');
@@ -22,8 +20,9 @@ mongoose.connection.on('error', (err) => {
 });
 
 // GraphQL setup
-import schema from './graphql/schema'; // Assuming schema is an ESM module
-app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
+app.use('/graphql', graphqlHTTP({ 
+  schema: schema,
+  graphiql: true }));
 
 // Express server
 app.listen(PORT, () => {
