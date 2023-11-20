@@ -1,13 +1,39 @@
 import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { REGISTER_USER, LOGIN_USER } from '../../graphql/mutations';
 
 const AuthForm = ({ onAuthSubmit, isRegister }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleAuthSubmit = (e) => {
+  // Use REGISTER_USER and LOGIN_USER directly
+  const [submitAuthForm, { loading, error }] = useMutation(
+    isRegister ? REGISTER_USER : LOGIN_USER,
+    {
+      onError: (error) => {
+        console.error('GraphQL error:', error);
+      },
+    }
+  );
+
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    // Pass username, password, and isRegister to the parent component
-    onAuthSubmit({ username, password, isRegister });
+
+    try {
+      const response = await submitAuthForm({
+        variables: {
+          username,
+          password,
+        },
+      });
+      
+      const data = response?.data
+
+      console.log('Authentication data:', data);
+      onAuthSubmit(data);
+    } catch (error) {
+      console.error('Authentication error:', error);
+    }
   };
 
   return (
@@ -22,7 +48,10 @@ const AuthForm = ({ onAuthSubmit, isRegister }) => {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </label>
       <br />
-      <button type="submit">{isRegister ? 'Register' : 'Login'}</button>
+      <button type="submit" disabled={loading}>
+        {loading ? 'Submitting...' : isRegister ? 'Register' : 'Login'}
+      </button>
+      {error && <p>Error: {error.message}</p>}
     </form>
   );
 };

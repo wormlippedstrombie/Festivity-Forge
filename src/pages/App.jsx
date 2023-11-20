@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EventList from '../components/EventList';
 import EventForm from '../components/EventForm';
-import AuthForm from '../components/AuthForm';
+import AuthForm from '../components/Authform';
 import '../styles/App.css';
 
 const App = () => {

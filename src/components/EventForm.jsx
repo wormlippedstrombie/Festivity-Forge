@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { CREATE_EVENT } from '../../graphql/mutations';
+import { GET_EVENTS_QUERY } from '../../graphql/queries';
 
 const EventForm = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +11,10 @@ const EventForm = () => {
     location: '',
   });
 
+  const [createEvent, { loading, error }] = useMutation(CREATE_EVENT, {
+    refetchQueries: [{ query: GET_EVENTS_QUERY }],
+  });
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -15,51 +22,19 @@ const EventForm = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    // Validate form data (you can add more specific validation logic)
-    if (!formData.title || !formData.date || !formData.location) {
-      alert('Please fill in all required fields.');
-      return;
-    }
-
-    // Send mutation to create an event with query variables
-    fetch('http://localhost:3001/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    createEvent({
+      variables: {
+        title: formData.title,
+        description: formData.description,
+        date: formData.date,
+        location: formData.location,
       },
-      body: JSON.stringify({
-        query: `
-          mutation ($title: String!, $description: String!, $date: String!, $location: String!) {
-            createEvent(
-              title: $title,
-              description: $description,
-              date: $date,
-              location: $location
-            ) {
-              _id
-              title
-              description
-              date
-              location
-            }
-          }
-        `,
-        variables: {
-          title: formData.title,
-          description: formData.description,
-          date: formData.date,
-          location: formData.location,
-        },
-      }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Event created:', data.data.createEvent);
-        // Add logic to update the UI or reset the form if needed
+      .then(({ data }) => {
+        console.log('Event created:', data.createEvent);
       })
       .catch((error) => {
         console.error('Error creating event:', error);
-        // Display a user-friendly error message to the user
         alert('Error creating event. Please try again.');
       });
   };
@@ -107,7 +82,10 @@ const EventForm = () => {
           />
         </label>
         <br />
-        <button type="submit">Create Event</button>
+        <button type="submit" disabled={loading}>
+          Create Event
+        </button>
+        {error && <p>Error: {error.message}</p>}
       </form>
     </div>
   );

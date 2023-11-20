@@ -1,33 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_EVENTS_QUERY } from '../../graphql/queries';
 
 const EventList = () => {
-  const [events, setEvents] = useState([]);
+  const { loading, error, data } = useQuery(GET_EVENTS_QUERY);
 
-  useEffect(() => {
-    // Fetch events from the GraphQL server
-    fetch('http://localhost:3001/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: `
-          query {
-            events {
-              _id
-              title
-              description
-              date
-              location
-            }
-          }
-        `,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => setEvents(data.data.events))
-      .catch((error) => console.error('Error fetching events:', error));
-  }, []);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const events = data.events;
 
   return (
     <div>

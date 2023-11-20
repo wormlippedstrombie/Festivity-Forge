@@ -2,9 +2,8 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type User {
-    _id: ID
+    _id: ID!
     username: String
-    # Add other fields as needed
   }
 
   type Event {
@@ -14,15 +13,24 @@ const typeDefs = gql`
     date: String
     location: String
     organizer: User
-    # Add other fields as needed
+  
   }
 
   type Query {
     events: [Event]
     event(id: ID): Event
+    findUserByUsername(username: String!): User
   }
 
   type Mutation {
+    registerUser(
+      username: String!, 
+      password: String!
+      ): User!
+    loginUser(
+      username: String!,
+       password: String!
+       ): User!
     createEvent(
       title: String!
       description: String!
