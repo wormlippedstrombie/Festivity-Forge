@@ -1,15 +1,19 @@
 import express from 'express';
-const app = express();
 import mongoose from 'mongoose';
-import { graphqlHTTP } from 'express-graphql'; // Import graphqlHTTP directly
+import { ApolloServer } from 'apollo-server-express';
+import typeDefs from './graphql/schema.js'; 
+import resolvers from './graphql/resolvers.js'; 
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+const app = express();
 const PORT = process.env.PORT || 3001;
-import schema from './graphql/schema.js';
 
-import dotenv from 'dotenv'; // Import dotenv directly
-dotenv.config(); // Load environment variables from .env file
-
-// MongoDB connection
-mongoose.connect('mongodb://127.0.0.1:27017/myapp');
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 mongoose.connection.on('connected', () => {
   console.log('Connected to MongoDB');
@@ -19,12 +23,13 @@ mongoose.connection.on('error', (err) => {
   console.error(`Error connecting to MongoDB: ${err.message}`);
 });
 
-// GraphQL setup
-app.use('/graphql', graphqlHTTP({ 
-  schema: schema,
-  graphiql: true }));
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
-// Express server
+server.applyMiddleware({ app, path: '/graphql' });
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}/graphql`);
 });
