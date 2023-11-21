@@ -6,14 +6,19 @@ const typeDefs = gql`
     username: String
   }
 
+  type AuthData {
+    _id: ID!
+    username: String!
+    authToken: String!
+  }
+
   type Event {
     _id: ID
     title: String
     description: String
     date: String
     location: String
-    organizer: User
-  
+    organizer: ID 
   }
 
   type Query {
@@ -26,17 +31,17 @@ const typeDefs = gql`
     registerUser(
       username: String!, 
       password: String!
-      ): User!
+    ): User!
     loginUser(
       username: String!,
-       password: String!
-       ): User!
+      password: String!
+    ): AuthData!
     createEvent(
       title: String!
       description: String!
       date: String!
       location: String!
-      organizerId: ID
+      organizer: ID
     ): Event
     updateEvent(
       id: ID!

@@ -13,8 +13,8 @@ export const LOGIN_USER = gql`
     loginUser(username: $username, password: $password) {
       _id
       username
-    }
   }
+}
 `;
 export const CREATE_EVENT = gql`
   mutation CreateEvent($title: String!, $description: String!, $date: String!, $location: String!, $organizerId: ID) {

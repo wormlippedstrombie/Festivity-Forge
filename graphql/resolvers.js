@@ -1,8 +1,31 @@
 import Event from '../models/event.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import User from '../models/user.js';
+
+dotenv.config();
+
+// Function to hash the user's password
+const hashPassword = (password) => {
+  const saltRounds = 10;
+  return bcrypt.hashSync(password, saltRounds);
+};
+
+// Function to verify the entered password against the hashed password
+const verifyPassword = (enteredPassword, hashedPassword) => {
+  return bcrypt.compareSync(enteredPassword, hashedPassword);
+};
+
+// Function to generate an authentication token
+const generateAuthToken = (user) => {
+  const secretKey = process.env.JWT_SECRET || 'defaultSecretKey';
+  return jwt.sign({ userId: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+};
 
 const resolvers = {
   Query: {
-    findUserByUsername: async (_, { username }, { User }) => {
+    findUserByUsername: async (_, { username }) => {
       try {
         const user = await User.findOne({ username });
         return user;
@@ -30,60 +53,93 @@ const resolvers = {
   },
   Mutation: {
     registerUser: async (_, { username, password }) => {
-      // Check if the username already exists
-      const existingUser = await findUserByUsername(username);
-      if (existingUser) {
-        throw new Error('Username is already taken');
+      try {
+        // Check if the username already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+          throw new Error('Username is already taken');
+        }
+
+        // Hash the password
+        const hashedPassword = hashPassword(password);
+
+        // Create a new user in the database
+        const newUser = new User({
+          username,
+          password: hashedPassword,
+        });
+
+        await newUser.save();
+
+        return newUser; // Return the newly registered user
+      } catch (error) {
+        console.error('Error registering user:', error);
+        throw new Error('Unable to register user');
       }
-
-      // Hash the password (use a secure hashing library)
-      const hashedPassword = hashPassword(password);
-
-      // Create a new user in the database
-      const newUser = await createUser({
-        username,
-        password: hashedPassword,
-      });
-
-      return newUser; // Return the newly registered user
     },
 
     loginUser: async (_, { username, password }) => {
-      // Find the user by username
-      const user = await findUserByUsername(username);
-      if (!user) {
-        throw new Error('User not found');
-      }
-
-      // Verify the password (use a secure password verification library)
-      const isPasswordValid = verifyPassword(password, user.password);
-      if (!isPasswordValid) {
-        throw new Error('Invalid password');
-      }
-
-      // Generate a token or session for authentication (use a secure authentication library)
-      const authToken = generateAuthToken(user);
-
-      return { authToken, user }; // Return the authentication token and user information
-    },
-    
-    createEvent: async (_, args) => {
       try {
+        // Find the user by username
+        const user = await User.findOne({ username });
+    
+        if (!user) {
+          throw new Error('User not found');
+        }
+    
+        // Verify the password
+        const isPasswordValid = verifyPassword(password, user.password);
+        if (!isPasswordValid) {
+          throw new Error('Invalid password');
+        }
+    
+        // Ensure the user has a valid _id
+        if (!user._id) {
+          throw new Error('User ID is missing or invalid');
+        }
+    
+        // Generate a token or session for authentication
+        const authToken = generateAuthToken(user);
+    
+        // Return the required user data
+        return {
+          _id: user._id,
+          username: user.username,
+          // Include other fields if needed
+          authToken,
+        };
+      } catch (error) {
+        console.error('Error logging in:', error);
+        throw new Error('Unable to log in');
+      }
+    },
+
+    createEvent: async (_, args, { user }) => {
+      try {
+        console.log('Authenticated user:', user);
+
+
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+    
+        // Set the organizer based on the authenticated user
         const newEvent = new Event({
           title: args.title,
           description: args.description,
           date: args.date,
           location: args.location,
-          // You might set the organizer based on the authenticated user
-          // organizer: authenticatedUser,
+          organizer: user._id, // Assuming user._id is the ID of the authenticated user
         });
-
+    
         const result = await newEvent.save();
         return result;
       } catch (error) {
+        console.error('Error creating event:', error);
         throw new Error(error);
       }
     },
+
     updateEvent: async (_, args) => {
       try {
         const updatedEvent = await Event.findByIdAndUpdate(

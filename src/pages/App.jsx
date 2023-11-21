@@ -14,7 +14,22 @@ const App = () => {
     console.log('Authentication submitted:', { username, password, isRegister });
     // Update authentication status if needed
     setIsAuthenticated(true);
+  
+    // Assuming you receive the token from the server
+    const authToken = 'your_received_token';
+  
+    // Store the token in local storage
+    localStorage.setItem('authToken', authToken);
   };
+
+  useEffect(() => {
+    // Check if the user is already authenticated
+    const storedToken = localStorage.getItem('authToken');
+    
+    if (storedToken) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   // If not authenticated, render authentication form
   if (!isAuthenticated) {

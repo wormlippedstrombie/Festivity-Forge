@@ -29,11 +29,13 @@ const server = new ApolloServer({
   resolvers,
 });
 
-// Make sure to await server.start() before applying middleware
+// Start Apollo Server and apply middleware
 async function startApolloServer() {
   await server.start();
   server.applyMiddleware({ app, path: '/graphql' });
 }
+
+// Allow CORS before starting the server
 app.use(cors());
 
 startApolloServer().then(() => {
