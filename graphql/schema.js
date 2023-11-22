@@ -18,7 +18,6 @@ const typeDefs = gql`
     description: String
     date: String
     location: String
-    organizer: ID 
   }
 
   type Query {
@@ -41,7 +40,6 @@ const typeDefs = gql`
       description: String!
       date: String!
       location: String!
-      organizer: ID
     ): Event
     updateEvent(
       id: ID!

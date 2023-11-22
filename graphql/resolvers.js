@@ -116,20 +116,11 @@ const resolvers = {
 
     createEvent: async (_, args, { user }) => {
       try {
-        console.log('Authenticated user:', user);
-
-
-        if (!user) {
-          throw new Error('User not authenticated');
-        }
-    
-        // Set the organizer based on the authenticated user
-        const newEvent = new Event({
+          const newEvent = new Event({
           title: args.title,
           description: args.description,
           date: args.date,
           location: args.location,
-          organizer: user._id, // Assuming user._id is the ID of the authenticated user
         });
     
         const result = await newEvent.save();

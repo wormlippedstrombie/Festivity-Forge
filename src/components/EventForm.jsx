@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_EVENT } from '../../graphql/mutations';
 import { GET_EVENTS_QUERY } from '../../graphql/queries';
+import '../styles/index.css'; // Import the global styles
+import '../styles/EventForm.css'; // Import the specific CSS file for EventForm
 
 const EventForm = () => {
-  // State to manage form data
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -12,101 +13,98 @@ const EventForm = () => {
     location: '',
   });
 
-  // Mutation hook for creating an event
-  const [createEvent, { loading, error, data }] = useMutation(CREATE_EVENT, {
-    refetchQueries: [{ query: GET_EVENTS_QUERY }], // Refetch event data after mutation
+  const [createEvent, { loading, error }] = useMutation(CREATE_EVENT, {
+    refetchQueries: [{ query: GET_EVENTS_QUERY }],
   });
 
-  // Handle input changes and update form data
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    const { title, description, date, location } = formData;
+    const formattedDate = new Date(date).toISOString().split('T')[0];
 
-    // Call the createEvent mutation with form data variables
     createEvent({
       variables: {
-        title: formData.title,
-        description: formData.description,
-        date: formData.date,
-        location: formData.location,
+        title,
+        description,
+        date: formattedDate,
+        location,
       },
     })
       .then(({ data }) => {
         console.log('Event created:', data.createEvent);
       })
       .catch((error) => {
-        // Log and alert for any errors during the mutation
         console.error('Error creating event:', error);
-        console.error('GraphQL error details:', error.graphQLErrors);
         alert('Error creating event. Please try again.');
       });
   };
 
-  // Render the form
   return (
     <div>
-      <h2>Create Event</h2>
-      <form onSubmit={handleFormSubmit}>
-        {/* Title input */}
-        <label>
-          Title:
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
+      <div className="toolbar">
+        <h1>Event Planner</h1>
+      </div>
+      <div className="event-form-container">
+        <h2 className="form-heading">Create Event</h2>
+        <form onSubmit={handleFormSubmit}>
+          <label className="label">
+            Title:
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="input-field"
+            />
+          </label>
+          <br />
 
-        {/* Description textarea */}
-        <label>
-          Description:
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
+          <label className="label">
+            Description:
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              className="input-field"
+            />
+          </label>
+          <br />
 
-        {/* Date input */}
-        <label>
-          Date:
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
+          <label className="label">
+            Date:
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              className="input-field"
+            />
+          </label>
+          <br />
 
-        {/* Location input */}
-        <label>
-          Location:
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
+          <label className="label">
+            Location:
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              className="input-field"
+            />
+          </label>
+          <br />
 
-        {/* Submit button */}
-        <button type="submit" disabled={loading}>
-          Create Event
-        </button>
+          <button type="submit" disabled={loading}>
+            Create Event
+          </button>
 
-        {/* Display error message if there's an error */}
-        {error && <p>Error: {error.message}</p>}
-      </form>
+          {error && <p>Error: {error.message}</p>}
+        </form>
+      </div>
     </div>
   );
 };

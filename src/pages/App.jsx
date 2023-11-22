@@ -1,54 +1,69 @@
 import React, { useState, useEffect } from 'react';
+import { AuthProvider } from '../context/AuthContext';
 import EventList from '../components/EventList';
 import EventForm from '../components/EventForm';
-import AuthForm from '../components/Authform';
+import AuthForm from '../components/AuthForm';
+import HomePage from '../components/HomePage';
+import routes from '../../routes/routes';
 import '../styles/App.css';
+import { useNavigate,Routes, Route, Outlet, Navigate} from 'react-router-dom';
+import Navbar from './Navbar';
 
 const App = () => {
-  // State to manage authentication status
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const [activeView, setActiveView] = React.useState('home'); // Default to home view
+  const navigate = useNavigate();
 
-  // Function to handle authentication submission
   const handleAuthSubmit = ({ username, password, isRegister }) => {
     // Implement authentication logic here
     console.log('Authentication submitted:', { username, password, isRegister });
     // Update authentication status if needed
-    setIsAuthenticated(true);
-  
-    // Assuming you receive the token from the server
     const authToken = 'your_received_token';
-  
+    setIsAuthenticated(true);
+
     // Store the token in local storage
     localStorage.setItem('authToken', authToken);
+    // Change the view to home after successful authentication
+    setActiveView('home');
   };
 
   useEffect(() => {
     // Check if the user is already authenticated
     const storedToken = localStorage.getItem('authToken');
-    
+
     if (storedToken) {
       setIsAuthenticated(true);
+      // Change the view to home if authenticated
+      setActiveView('home');
     }
-  }, []);
+  }, [setIsAuthenticated]);
 
-  // If not authenticated, render authentication form
-  if (!isAuthenticated) {
-    return (
-      <div>
-        <h1>Event Planner</h1>
-        <AuthForm onAuthSubmit={handleAuthSubmit} />
-      </div>
-    );
-  }
+  const navigateToCreateEvent = () => {
+    // Change the view to create event
+    setActiveView('createEvent');
+    // Use the navigate function to change the URL
+    navigate('/create-event');
+  };
 
-  // If authenticated, render event-related components
   return (
     <div>
-      <h1>Event Planner</h1>
-      <EventForm />
-      <EventList />
+      <Outlet />
     </div>
   );
 };
 
-export default App;
+// Wrap the entire App component with AuthProvider
+const AppWithAuth = () => (
+  <AuthProvider>
+    <Navbar />
+      <Routes>
+        <Route
+          exact path="/"
+          element={<HomePage navigateToCreateEvent={App.navigateToCreateEvent} />}
+        />
+        <Route path="/create-event" element={<EventForm />} />
+      </Routes>
+  </AuthProvider>
+);
+
+export default AppWithAuth;
