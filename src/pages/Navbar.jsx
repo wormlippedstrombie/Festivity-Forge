@@ -4,7 +4,7 @@ import '../styles/navbar.css';
 const Navbar = () => {
     return (
         <nav className='navbar'>
-            <h1>Event Manager</h1>
+            <h1>Festivity Forge</h1>
             <div className="links">
                 <Link to="/">Home</Link>
                 <Link to="/create-event">Create Event</Link>
