@@ -7,7 +7,7 @@ const Navbar = () => {
             <h1>Event Manager</h1>
             <div className="links">
                 <Link to="/">Home</Link>
-                <Link to="/event-form">Create Event</Link>
+                <Link to="/create-event">Create Event</Link>
                 <Link to="/view-events">View Events</Link>
                 <Link to="/login">Login</Link>
                 <Link to="/register">Register</Link>

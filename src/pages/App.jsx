@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { AuthProvider } from '../context/AuthContext';
 import EventList from '../components/EventList';
 import EventForm from '../components/EventForm';
-import AuthForm from '../components/AuthForm';
+import LoginForm from '../components/LoginForm';
+import RegisterForm from '../components/RegisterForm';
 import HomePage from '../components/HomePage';
 import routes from '../../routes/routes';
 import '../styles/App.css';
@@ -57,11 +58,11 @@ const AppWithAuth = () => (
   <AuthProvider>
     <Navbar />
       <Routes>
-        <Route
-          exact path="/"
-          element={<HomePage navigateToCreateEvent={App.navigateToCreateEvent} />}
-        />
-        <Route path="/create-event" element={<EventForm />} />
+      <Route path="/" element={<HomePage navigateToCreateEvent={App.navigateToCreateEvent} />} />
+      <Route path="/create-event" element={<EventForm />} />
+      <Route path="/view-events" element={<EventList />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/register" element={<RegisterForm />} />
       </Routes>
   </AuthProvider>
 );

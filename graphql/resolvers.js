@@ -1,26 +1,24 @@
 import Event from '../models/event.js';
-import bcrypt from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/user.js';
+
 
 dotenv.config();
 
 // Function to hash the user's password
 const hashPassword = (password) => {
-  const saltRounds = 10;
-  return bcrypt.hashSync(password, saltRounds);
-};
-
-// Function to verify the entered password against the hashed password
-const verifyPassword = (enteredPassword, hashedPassword) => {
-  return bcrypt.compareSync(enteredPassword, hashedPassword);
+  const trimmedPassword = password.trim();
+  const saltRounds = 9;
+  return bcryptjs.hashSync(trimmedPassword, saltRounds);
 };
 
 // Function to generate an authentication token
 const generateAuthToken = (user) => {
   const secretKey = process.env.JWT_SECRET || 'defaultSecretKey';
   return jwt.sign({ userId: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+
 };
 
 const resolvers = {
@@ -61,7 +59,7 @@ const resolvers = {
         }
 
         // Hash the password
-        const hashedPassword = hashPassword(password);
+        const hashedPassword = hashPassword(password, 10);
 
         // Create a new user in the database
         const newUser = new User({
@@ -86,9 +84,13 @@ const resolvers = {
         if (!user) {
           throw new Error('User not found');
         }
-    
+        const trimmedPassword = password.trim();
+
         // Verify the password
-        const isPasswordValid = verifyPassword(password, user.password);
+        console.log('Entered Password:', password);
+        console.log('Stored Hashed Password:', user.password);
+        const isPasswordValid = bcryptjs.compareSync(trimmedPassword, user.password);
+        console.log('Password Validation Result:', isPasswordValid);
         if (!isPasswordValid) {
           throw new Error('Invalid password');
         }
@@ -102,6 +104,7 @@ const resolvers = {
         const authToken = generateAuthToken(user);
     
         // Return the required user data
+        console.log('Login Successful. User:', user);
         return {
           _id: user._id,
           username: user.username,

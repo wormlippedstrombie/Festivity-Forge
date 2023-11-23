@@ -20,7 +20,6 @@ const LoginForm = () => {
         setLoading(false);
       },
       onCompleted: (response) => {
-        console.log('Login response:', response);
         setLoading(false);
   
         if (response.errors) {
@@ -30,7 +29,6 @@ const LoginForm = () => {
   
         const loginUserResponse = response?.loginUser;
         if (loginUserResponse) {
-          console.log('Login data:', loginUserResponse);
           login(loginUserResponse);
         } else {
           console.error('Invalid login data. Response:', response);
@@ -41,6 +39,8 @@ const LoginForm = () => {
     const handleLoginSubmit = async (e) => {
       e.preventDefault();
       setLoading(true);
+
+      console.log('Entered Password:', password);
   
       try {
         await loginUser({

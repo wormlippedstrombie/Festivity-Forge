@@ -28,7 +28,7 @@ const RegisterForm = () => {
           return;
         }
   
-        const authData = response?.data?.registerUser;
+        const authData = response?.registerUser;
         if (authData) {
           console.log('Registration data:', authData);
           login(authData);

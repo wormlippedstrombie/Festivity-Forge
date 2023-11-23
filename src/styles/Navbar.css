@@ -1,27 +1,42 @@
 /* Add a black background color to the top navigation */
-.topnav {
-    background-color: #333;
-    overflow: hidden;
-  }
+.navbar {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--primary-color); /* Use a variable for consistent color */
+  width: 100%; /* Take up the full width of the viewport */
+  z-index: 1000; /* Ensure the navbar is above other elements */
+}
   
   /* Style the links inside the navigation bar */
-  .topnav a {
+  .navbar a {
     float: left;
-    color: #f2f2f2;
+    color: var(--nav-link-color); /* Use a variable for consistent link color */
     text-align: center;
-    padding: 14px 16px;
+    padding: 1.5% 2%;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 1.2em;
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth transition */
   }
   
   /* Change the color of links on hover */
-  .topnav a:hover {
-    background-color: #ddd;
-    color: black;
+  .navbar a:hover {
+    background-color: var(--nav-link-hover-bg); /* Use a variable for consistent hover background color */
+    color: var(--nav-link-hover-color); /* Use a variable for consistent hover text color */
   }
   
   /* Add a color to the active/current link */
-  .topnav a.active {
-    background-color: #04AA6D;
-    color: white;
+  .navbar a.active {
+    background-color: var(--nav-link-active-bg); /* Use a variable for consistent active background color */
+    color: var(--nav-link-active-color); /* Use a variable for consistent active text color */
   }
+  :root {
+    --primary-color: #333;
+    --nav-link-color: #f2f2f2;
+    --nav-link-hover-bg: #ddd;
+    --nav-link-hover-color: black;
+    --nav-link-active-bg: #04AA6D;
+    --nav-link-active-color: white;
+  }
+  

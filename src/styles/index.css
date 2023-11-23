@@ -24,11 +24,9 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  padding: 2rem;
+  box-sizing: border-box; /* Include padding in the element's total width and height */
 }
 
 h1 {
@@ -58,6 +56,40 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.event-list-container {
+  max-width: 800px; /* Adjust the width as needed */
+  padding: 20px; /* Add padding to the container */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+/* Additional styles for the EventList component */
+.event-list-container h2 {
+  font-size: 2em; /* Adjust the font size as needed */
+}
+
+.event-list-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.event-list-container li {
+  margin-bottom: 10px; /* Adjust the margin as needed */
+}
+
+@media (max-width: 600px) {
+  .event-list-container {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+
+  .event-list-container h2 {
+    font-size: 1.5em; /* Adjust font size for smaller screens */
+  }
+
+  .styled-table {
+    font-size: 0.8em; /* Adjust font size for smaller screens */
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #050505; /* Dark text color for light mode */
@@ -69,4 +101,41 @@ button:focus-visible {
   button {
     background-color: #1877f2; /* Facebook blue color for buttons in light mode */
   }
+}
+
+.styled-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
 }
