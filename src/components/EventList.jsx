@@ -6,7 +6,7 @@ import '../styles/index.css'; // Import the global styles
 
 const EventList = () => {
   console.log('EventList component is rendering');
-  const { loading, error, data } = useQuery(GET_EVENTS_QUERY);
+  const { loading, error, data, refetch } = useQuery(GET_EVENTS_QUERY);
   const [updateEvent] = useMutation(UPDATE_EVENT);
   const [deleteEvent] = useMutation(DELETE_EVENT);
 

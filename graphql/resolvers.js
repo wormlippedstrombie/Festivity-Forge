@@ -149,7 +149,7 @@ const resolvers = {
     },
     deleteEvent: async (_, { id }) => {
       try {
-        const deletedEvent = await Event.findByIdAndRemove(id);
+        const deletedEvent = await Event.findByIdAndDelete(id);
         return deletedEvent;
       } catch (error) {
         throw new Error(error);
