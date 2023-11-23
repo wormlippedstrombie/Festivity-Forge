@@ -41,7 +41,8 @@ npm install and node server.js to run
 ```
 
 ## Raw Link
-https://delt-fitness-e-commerce-36c3e8da33f5.herokuapp.com/
+heroku is currently not rendering a working copy of the app:[here](https://still-tor-03591-eaf0fbc54feb.herokuapp.com/)
+
 
 ## Testing
 
